@@ -1,11 +1,13 @@
 import fastify from 'fastify'
 import { env } from './env'
-import { transactionsRoutes } from './routes/transaction'
+import { transactionsRoutes } from './routes/transactions'
 
 const app = fastify()
 
 // instanciado um plugin
-app.register(transactionsRoutes)
+app.register(transactionsRoutes, {
+  prefix: 'transactions',
+})
 
 app
   .listen({
