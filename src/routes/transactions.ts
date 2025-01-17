@@ -6,6 +6,10 @@ import { checkSessionIdExists } from '../middlewares/check-session-id-exists'
 
 // instanciando o APP pois TS reclama se não falar o que ele é
 export async function transactionsRoutes(app: FastifyInstance) {
+  app.addHook('preHandler', async (request) => {
+    console.log(`[${request.method} ${request.url}]`)
+  })
+
   app.get(
     '/',
     {
@@ -60,7 +64,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
 
       const summary = await knex('transactions')
         .where('session_id', sessionId)
-        .sum('amount', { as: 'amount' })
+        .sum('amount as amount')
         .first()
 
       return { summary }
@@ -79,7 +83,7 @@ export async function transactionsRoutes(app: FastifyInstance) {
       request.body,
     )
 
-    let sessionId
+    let { sessionId } = request.cookies
 
     // se não existir o sessionId
     if (!sessionId) {
